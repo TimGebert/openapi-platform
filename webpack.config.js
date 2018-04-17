@@ -5,6 +5,7 @@ module.exports = (env, argv) => {
   const WebpackShellPlugin = require('webpack-shell-plugin');
   const { HotModuleReplacementPlugin } = require('webpack');
   const nodeExternals = require('webpack-node-externals');
+  const OfflinePlugin = require('offline-plugin');
   const createBabelPresets = envSettings => [
     ['@babel/preset-env', envSettings],
     '@babel/preset-react',
@@ -119,7 +120,13 @@ module.exports = (env, argv) => {
         title: 'Swagger Platform',
         template: join(paths.public, 'index.html')
       }),
-      new HotModuleReplacementPlugin()
+      new HotModuleReplacementPlugin(),
+      new OfflinePlugin({
+        ServiceWorker: {
+          minify: false,
+          navigateFallbackURL: '/'
+        }
+      })
     ],
     devServer: {
       hot: true,
