@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { observable } from 'mobx';
+import { Observer } from 'mobx-react';
 
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -12,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { GitInfo, OAuth2Format } from 'model/GitInfo';
 import { Category } from 'model/Storybook';
+import { createStyled } from 'view/createStyled';
 
 export interface FormError {
   repoUrl?: string;
@@ -21,6 +23,14 @@ export interface FormError {
 export interface FormInput {
   gitInfo: GitInfo;
 }
+
+const Styled = createStyled(theme => ({
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing.unit * 3,
+  },
+}))
 
 export interface PublishFormProps {}
 
@@ -50,46 +60,58 @@ export class PublishForm extends Component<PublishFormProps> {
 
   public render() {
     return (
-      <form>
-        <Typography variant="title">Where do you want to publish the SDK?</Typography>
-        {/*
-           * TODO: there's some pretty obvious improvements to be made here.
-           * E.g. 
-           *  - Providing more customizability for Git integration.
-           *  - Better validation
-           */}
-        <Typography variant="subheading">Git</Typography>
-        <FormControl error={this.error.repoUrl !== undefined} margin="dense">
-          <InputLabel htmlFor="target">Repository URL</InputLabel>
-          <Input
-            id="title"
-            onChange={this.onRepoUrlChange}
-            onBlur={this.forceValidateUrl}
-            value={this.input.gitInfo.repoUrl}
-          />
-          <FormHelperText>{this.error.repoUrl}</FormHelperText>
-        </FormControl>
-        <FormControl error={this.error.service !== undefined} margin="dense">
-          <InputLabel htmlFor="target">Service</InputLabel>
-          <Select
-            onChange={this.onServiceChange}
-            onBlur={this.forceValidateService}
-            value={this.input.gitInfo.auth.oauth2format}
-            inputProps={{
-              id: 'target',
-            }}
-          >
-            {Object.keys(OAuth2Format)
-              .map(key => OAuth2Format[key])
-              .map(target => (
-                <MenuItem key={target} value={target}>
-                  {target}
-                </MenuItem>
-              ))}
-          </Select>
-          <FormHelperText>{this.error.service}</FormHelperText>
-        </FormControl>
-      </form>
+      <Styled>
+        {
+          ({ classes }) => (
+            <Observer>
+              {
+                () => (
+                  <form className={classes.content}>
+                    <Typography variant="title">Where do you want to publish the SDK?</Typography>
+                    {/*
+                      * TODO: there's some pretty obvious improvements to be made here.
+                      * E.g. 
+                      *  - Providing more customizability for Git integration.
+                      *  - Better validation
+                      */}
+                    <Typography variant="subheading">Git</Typography>
+                    <FormControl error={this.error.repoUrl !== undefined} margin="dense">
+                      <InputLabel htmlFor="target">Repository URL</InputLabel>
+                      <Input
+                        id="title"
+                        onChange={this.onRepoUrlChange}
+                        onBlur={this.forceValidateUrl}
+                        value={this.input.gitInfo.repoUrl}
+                      />
+                      <FormHelperText>{this.error.repoUrl}</FormHelperText>
+                    </FormControl>
+                    <FormControl error={this.error.service !== undefined} margin="dense">
+                      <InputLabel htmlFor="target">Service</InputLabel>
+                      <Select
+                        onChange={this.onServiceChange}
+                        onBlur={this.forceValidateService}
+                        value={this.input.gitInfo.auth.oauth2format}
+                        inputProps={{
+                          id: 'target',
+                        }}
+                      >
+                        {Object.keys(OAuth2Format)
+                          .map(key => OAuth2Format[key])
+                          .map(target => (
+                            <MenuItem key={target} value={target}>
+                              {target}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                      <FormHelperText>{this.error.service}</FormHelperText>
+                    </FormControl>
+                  </form>          
+                )
+              }
+            </Observer>
+          )
+        }
+      </Styled>
     );
   }
 }
