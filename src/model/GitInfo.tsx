@@ -3,11 +3,17 @@
  * isomorphic-git https://isomorphic-git.github.io/docs/en/push
  */
 
+export enum OAuth2Format {
+  github = 'github',
+  bitbucket = 'bitbucket',
+  gitlab = 'gitlab',
+}
+
 export interface GitAuth {
   username: string;
   token?: string;
   password?: string;
-  oauth2format?: 'github' | 'bitbucket' | 'gitlab';
+  oauth2format?: OAuth2Format;
 }
 
 export interface GitInfo {

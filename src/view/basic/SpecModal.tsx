@@ -13,11 +13,12 @@ import { ButtonProps } from '@material-ui/core/Button';
 import { ModalProps } from '@material-ui/core/Modal';
 import { observable, action, computed } from 'mobx';
 import { Observer } from 'mobx-react';
+import { isWebUri } from 'valid-url';
 
 import { FloatingModal } from 'basic/FloatingModal';
+import { urlError } from 'basic/urlError';
 import { Category } from 'model/Storybook';
 import { AddedSpec } from 'state/SpecState';
-import { isWebUri } from 'valid-url';
 import { createStyled } from 'view/createStyled';
 
 const Styled: any = createStyled(theme => ({
@@ -101,13 +102,7 @@ export class SpecModal extends Component<SpecModalProps> {
   @computed
   get urlError(): string | undefined {
     const url = this.formText.url;
-    if (!url) {
-      return 'Error: URL cannot be empty';
-    } else if (!isWebUri(url)) {
-      return 'Error: Invalid URL';
-    } else {
-      return undefined;
-    }
+    return urlError(url);
   }
 
   /**

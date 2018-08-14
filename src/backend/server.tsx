@@ -34,6 +34,7 @@ export async function createServer(dbConnection: Sequelize.Sequelize) {
     title: 'Swagger Platform',
     description: 'Open sourced service overlay for SDK management using swagger-codegen',
   };
+
   app
     .use(
       morgan('dev', {
@@ -81,6 +82,7 @@ export async function createServer(dbConnection: Sequelize.Sequelize) {
       },
     },
   });
+
   app.service('sdks').hooks({
     before: {
       async create(context) {
@@ -88,9 +90,9 @@ export async function createServer(dbConnection: Sequelize.Sequelize) {
         const spec = await specService.get(plan.specId, {});
         const sdk = await generateSdk(logger, spec, plan);
         /*
-        TODO: The linkside of the info object is probably temporary.
-        Might need to consider downloading the object from 
-        wherever the Swagger gen API stores it.
+          TODO: The linkside of the info object is probably temporary.
+          Might need to consider downloading the object from 
+          wherever the Swagger gen API stores it.
         */
         context.data.path = sdk.path;
         context.data.planId = plan.id;
